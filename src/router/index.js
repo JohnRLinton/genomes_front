@@ -9,6 +9,8 @@ import LDblock from '@/views/LDblock'
 import download from '@/views/download'
 import sample from '@/views/sample'
 import s from '@/views/s'
+import SNP from '@/views/SNP'
+import GWAS from '@/views/GWAS'
 
 Vue.use(Router)
 
@@ -23,7 +25,10 @@ export default new Router({
     {
       path:'/sample',
       name:'sample',
-      component: sample
+      component: sample,
+      // meta: {
+      //   keepAlive: true // 判断是否缓存
+      // }
     },
     {
       path:'/cluster',
@@ -54,6 +59,14 @@ export default new Router({
       path:'/s',
       name:'s',
       component: s
-    }
+    },{
+      path:'/SNP',
+      name:'SNP',
+      component: SNP
+    },{
+      path:'/GWAS',
+      name:'GWAS',
+      component: GWAS
+    },
   ]
 })

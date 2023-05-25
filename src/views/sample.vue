@@ -24,6 +24,12 @@
                   <a class="nav-link" href="cluster"> Cluster</a>
                 </li>
                 <li class="nav-item">
+                  <a class="nav-link" href="SNP"> SNP</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="GWAS"> GWAS</a>
+                </li>
+                <li class="nav-item">
                   <a class="nav-link" href="LDblock">LDBlock</a>
                 </li>
                 <li class="nav-item">
@@ -47,7 +53,7 @@
 
     <div class="mainbody">
       <div class="container">
-        <!-- Individual Infomation -->
+        <!-- Individual Infomation   table -->
         <div class="module">
           <el-alert
             title="Individual Infomation"
@@ -56,7 +62,9 @@
           ></el-alert>
           <div class="mod_tab">
             <el-table
-              :data="sampleData"
+              :data="
+                sampleData.slice((currpage - 1) * pagesize, currpage * pagesize)
+              "
               v-loading="loading"
               stripe
               border
@@ -65,14 +73,14 @@
             >
               <el-table-column
                 fixed
-                prop="sampleID"
-                label="sampleID"
+                prop="sampleName"
+                label="sampleName"
                 sortable
               ></el-table-column>
               <el-table-column prop="sex" label="sex"></el-table-column>
               <el-table-column
-                prop="BioID"
-                label="BioSampleID"
+                prop="bioID"
+                label="bioID"
                 sortable
               ></el-table-column>
               <el-table-column
@@ -84,24 +92,23 @@
                 label="populationName"
               ></el-table-column>
               <el-table-column
-                prop="SupCode"
-                label="SuperPopulationCode"
+                prop="superpopulationCode"
+                label="superpopulationCode"
               ></el-table-column>
               <el-table-column
-                prop="SupName"
-                label="SuperPopulationName"
+                prop="superpopulationName"
+                label="superpopulationName"
               ></el-table-column>
             </el-table>
 
             <el-pagination
               background
-              @size-change="handleSampleSizeChange"
-              @current-change="handleSampleCurrentChange"
-              :current-page="samplePageIndex"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
               layout="total, sizes, prev, pager, next"
-              :total="sampleTotalPage"
+              :total="sampleData.length"
               :page-sizes="[20, 50, 100, 200]"
-              :page-size="samplePageSize"
+              :page-size="pagesize"
             >
             </el-pagination>
           </div>
@@ -110,7 +117,7 @@
         <!-- Individual Statistic -->
         <div class="module">
           <el-alert
-            title="Individual Statistic"
+            title="Individual Statistics"
             type="info"
             :closable="false"
           ></el-alert>
@@ -132,15 +139,25 @@
             </el-col>
             <el-col :span="8">
               <div>
-                <el-statistic title="Ratio of Population">
-                  <template slot="formatter"> 456/2 </template>
+                <el-statistic>
+                  <template slot="formatter">
+                    <div
+                      ref="RatioOfPop"
+                      style="width: 300px; height: 300px"
+                    ></div>
+                  </template>
                 </el-statistic>
               </div>
             </el-col>
             <el-col :span="8">
               <div>
-                <el-statistic title="Ratio of Men to Women">
-                  <template slot="formatter"> 456/2 </template>
+                <el-statistic>
+                  <template slot="formatter">
+                    <div
+                      ref="RatioOfSex"
+                      style="width: 300px; height: 300px"
+                    ></div>
+                  </template>
                 </el-statistic>
               </div>
             </el-col>
@@ -162,17 +179,11 @@
               class="demo-form-inline"
             >
               <el-form-item label="SampleID">
-                <el-select
-                  v-model="VariantForm.SampleID"
+               <el-input
+                  v-model="VariantForm.sampleID"
                   placeholder="SampleID"
-                >
-                  <el-option
-                    v-for="id in samplesID"
-                    :label="id.id"
-                    :value="id.id"
-                    :key="id.id"
-                  ></el-option>
-                </el-select>
+                  clearable
+                ></el-input>
               </el-form-item>
               <el-form-item label="ChrNo">
                 <el-input
@@ -225,7 +236,13 @@
                 prop="IsVaration"
                 label="IsVaration"
               ></el-table-column>
-              <el-table-column prop="RsId" label="RsId"></el-table-column>
+              <el-table-column prop="RsId" label="RsId">
+                <template slot-scope="scope">
+                    <el-link :href="'https://asia.ensembl.org/Homo_sapiens/Variation/Sample?do=core;r=1:230709548-230710548;v='+scope.row.RsId" target="_blank">
+                    {{ scope.row.RsId }}
+                    </el-link>
+                </template>
+              </el-table-column>
             </el-table>
             <el-pagination
               background
@@ -246,7 +263,7 @@
     </div>
     <el-footer>
       <div>
-        <p>All Right@</p>
+        <p class="mod_footer">All Right@Lab</p>
       </div>
     </el-footer>
   </el-container>
@@ -259,10 +276,12 @@
 import "@/assets/css/style.css";
 import "@/assets/css/responsive.css";
 import "@/assets/css/font-awesome.min.css";
+import axios from "axios";
 export default {
   data() {
     return {
       sampleData: [],
+      temList: [],
       sampleVarationData: [],
       populationNum: [],
       superPopulationNum: [],
@@ -275,8 +294,12 @@ export default {
         EndPos: "",
       },
       // rsTabcurrentPage: this.rsTabcurrentPage,
+
+      pagesize: 10,
+      currpage: 1,
+
       samplePageIndex: 1,
-      samplePageSize: 20,
+      samplePageSize: 10,
       sampleTotalPage: 0,
       rsPageIndex: 1,
       rsPageSize: 20,
@@ -290,51 +313,83 @@ export default {
       // input: "Hello Element UI!",
     };
   },
+  // activated(){
+  //   this.getSample();
+  // },
   methods: {
     getSample() {
-      this.$http({
-        url: this.$http.adornUrl("/1000genomes/sample/getAllsample"),
-        method: "get",
-        params: this.$http.adornParams({
-          page: this.samplePageIndex,
-          limit: this.samplePageSize,
-        }),
-      }).then(({ data }) => {
-        if (data && data.code === 0) {
-          this.sampleData = data.data;
-          this.populationNum = data.NumPopulation;
-          this.superPopulationNum = data.NumSuperPopulation;
-          this.sexNum = data.NumSex;
-          this.sampleTotalPage = data.page.totalCount;
-          this.samplesID = data.sampleID;
-        } else {
-          this.sampleTotalPage = 0;
-        }
-      });
+      // console.log("error");
+      const that = this;
+      axios
+        .get("http://10.170.151.0:8080/1000genomes/sample/getAllSample")
+        .then(function (res) {
+          that.sampleData = res.data.result;
+          // console.log(that.sampleData);
+          // console.log("111",data.data.result);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     },
     getVariant() {
-      this.$http({
-        url: this.$http.adornUrl("/1000genomes/?"),
-        method: "get",
-        params: this.$http.adornParams({
-          sample: this.VariantForm.SampleID,
-          chr: this.VariantForm.ChrNo,
-          startPos: this.VariantForm.StartPos,
-          endPos: this.VariantForm.EndPos,
-          page: this.rsPageIndex,
-          limit: this.rsPageSize,
-        }),
-      }).then(({ data }) => {
-        // this.sampleVarationData = data.data;
-        if (data && data.code === 0) {
-          this.sampleVarationData = data.data;
-          this.rsTotalPage = data.page.totalCount;
-        } else {
-          this.rsTotalPage = 0;
-        }
-      });
+      // this.$http({
+      //   url: this.$http.adornUrl("/1000genomes/?"),
+      //   method: "get",
+      //   params: this.$http.adornParams({
+      //     sample: this.VariantForm.SampleID,
+      //     chr: this.VariantForm.ChrNo,
+      //     startPos: this.VariantForm.StartPos,
+      //     endPos: this.VariantForm.EndPos,
+      //     page: this.rsPageIndex,
+      //     limit: this.rsPageSize,
+      //   }),
+      // }).then(({ data }) => {
+      //   // this.sampleVarationData = data.data;
+      //   if (data && data.code === 0) {
+      //     this.sampleVarationData = data.data;
+      //     this.rsTotalPage = data.page.totalCount;
+      //   } else {
+      //     this.rsTotalPage = 0;
+      //   }
+      // });
+    this.sampleVarationData=[{
+        "sampleID":"HG00096",
+        "Chr":1,
+        "Pos":10177,
+        "IsVaration":"YES",
+        "RsId":"rs367896724",
+      },
+      {
+        "sampleID":"HG00096",
+        "Chr":1,
+        "Pos":10235,
+        "IsVaration":"YES",
+        "RsId":"rs540431307",
+      },
+      {
+        "sampleID":"HG00096",
+        "Chr":1,
+        "Pos":10352,
+        "IsVaration":"YES",
+        "RsId":"rs555500075",
+      },
+      {
+        "sampleID":"HG00096",
+        "Chr":1,
+        "Pos":10505,
+        "IsVaration":"NO",
+        "RsId":"rs548419688",
+      },
+      {
+        "sampleID":"HG00096",
+        "Chr":1,
+        "Pos":10506,
+        "IsVaration":"NO",
+        "RsId":".",
+      },]
     },
     echartsInit() {
+      //Super
       let RatioOfSupChart = this.$echarts.init(this.$refs.RatioOfSup);
       RatioOfSupChart.setOption({
         title: {
@@ -343,45 +398,141 @@ export default {
         },
         tooltip: {},
         xAxis: {
-          data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
+          data: ["AFR", "EUR", "EAS", "SAS", "AMR"],
         },
         yAxis: {},
         series: [
           {
-            name: "销量",
+            name: "SuperPopulation",
             type: "bar",
-            data: [5, 20, 36, 10, 10, 20],
+            data: [836, 659, 601, 522, 497],
+          },
+        ],
+      });
+
+      //population
+      let RatioOfPopChart = this.$echarts.init(this.$refs.RatioOfPop);
+      RatioOfPopChart.setOption({
+        title: {
+          text: "Ration Of Population",
+          left: "center",
+        },
+        tooltip: {},
+        xAxis: {
+          data: [
+            "YRI",
+            "CEU",
+            "IBS",
+            "PUR",
+            "CLM",
+            "PEL",
+            "KHV",
+            "ACB",
+            "LWK",
+            "PJL",
+            "GWD",
+            "GIH",
+            "TSI",
+            "ASW",
+            "CHB",
+            "STU",
+            "JPT",
+            "GBR",
+            "MXL",
+            "FIN",
+            "ITU",
+            "CDX",
+            "ESN",
+            "MSL",
+            "BEB",
+          ],
+        },
+        yAxis: {},
+        series: [
+          {
+            name: "Population",
+            type: "bar",
+            data: [
+              186, 183, 165, 157, 139, 132, 122, 121, 116, 113, 113, 113, 112,
+              111, 108, 105, 104, 104, 103, 103, 102, 100, 89, 88,
+            ],
+          },
+        ],
+      });
+
+      //Sex
+      let RatioOfSexChart = this.$echarts.init(this.$refs.RatioOfSex);
+      RatioOfSexChart.setOption({
+        title: {
+          text: "Ration Of Sex",
+          left: "center",
+        },
+        tooltip: {},
+
+        series: [
+          {
+            name: "Gender",
+            type: "pie",
+            label: {
+              normal: {
+                position: "inner",
+                show: false,
+              },
+            },
+            data: [
+              {
+                value: 1569,
+                name: "Female",
+              },
+              {
+                value: 935,
+                name: "Male",
+              },
+            ],
           },
         ],
       });
     },
-    handleSampleSizeChange(val) {
-      this.samplePageSize = val;
-      this.samplePageIndex = 1;
-      this.getSample();
-      console.log(`每页 ${val} 条`);
+
+    handleCurrentChange(cpage) {
+      this.currpage = cpage;
+      // this.getSample();
+      // console.log(`当前页: ${val}`);
     },
-    handleSampleCurrentChange(val) {
-      this.samplePageIndex = val;
-      this.getSample();
-      console.log(`当前页: ${val}`);
+
+    handleSizeChange(psize) {
+      this.pagesize = psize;
     },
-    handleRsSizeChange(val) {
-      this.rsPageSize = val;
-      this.rsPageIndex = 1;
-      this.getVariant();
-      console.log(`每页 ${val} 条`);
-    },
-    handleRsCurrentChange(val) {
-      this.rsIndex = val;
-      this.getVariant();
-      console.log(`当前页: ${val}`);
-    },
+
+    // currentChangePage(list,currentPage){
+    //   let from=(currentPage-1) * this.samplePageSize;
+    //   let to =currentPage * this.samplePageSize;
+    //   this.temList=[];
+    //   for(;from<to;from++){
+    //     if(list[from]){
+    //       this.temList.push(list[from]);
+    //     }
+    //   }
+    // }
+    // handleRsSizeChange(val) {
+    //   this.rsPageSize = val;
+    //   this.rsPageIndex = 1;
+    //   this.getVariant();
+    //   console.log(`每页 ${val} 条`);
+    // },
+    // handleRsCurrentChange(val) {
+    //   this.rsIndex = val;
+    //   this.getVariant();
+    //   console.log(`当前页: ${val}`);
+    // },
   },
   mounted() {
     this.$nextTick(() => {
       this.echartsInit();
     });
+  },
+  created() {
+    this.getSample();
   },
 };
 </script>
@@ -485,8 +636,8 @@ body > .el-container {
 
 .mod_tab {
   margin-top: 30px;
-  margin-left: 50px;
-  margin-right: 50px;
+  margin-left: 35px;
+  margin-right: 35px;
   text-align: center;
   /* display:flex;
   justify-content:space-between; */
@@ -497,5 +648,11 @@ body > .el-container {
   margin-top: 30px;
   margin-left: 50px;
   margin-right: 30px;
+}
+.mod_footer {
+  margin-top: 20px;
+  text-align: center;
+  font-family: Century;
+  font-size: 16px;
 }
 </style>

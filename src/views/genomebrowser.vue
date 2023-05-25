@@ -1,32 +1,32 @@
 <template>
-<div class="sub_page">
-  
-
-  <div class="hero_area">
-    <!-- header section strats -->
-    <header class="header_section ">
+<el-container>
+    <el-header>
       <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg custom_nav-container ">
-          <a class="navbar-brand" href="index.html">
-            <span>
-              1000Genomes
-            </span>
+        <nav class="navbar navbar-expand-lg custom_nav-container">
+          <a class="navbar-brand" href="index">
+            <span> 1000Genomes </span>
           </a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class=""> </span>
-          </button>
-
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <div class="d-flex mx-auto flex-column flex-lg-row align-items-center">
-              <ul class="navbar-nav  ">
+            <div
+              class="d-flex mx-auto flex-column flex-lg-row align-items-center"
+            >
+              <ul class="navbar-nav">
                 <li class="nav-item active">
-                  <a class="nav-link" href="index">Home <span class="sr-only">(current)</span></a>
+                  <a class="nav-link" href="index"
+                    >Home <span class="sr-only">(current)</span></a
+                  >
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="sample"> Sample</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="cluster"> Cluster</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="SNP"> SNP</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="GWAS"> GWAS</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="LDblock">LDBlock</a>
@@ -42,206 +42,27 @@
                 </li>
               </ul>
             </div>
-            
           </div>
         </nav>
       </div>
-    </header>
-    <!-- end header section -->
-  </div>
+    </el-header>
 
+<div class="mainbody">
 
-
-  <!-- course section start -->
-
-  <section class="course_section layout_padding">
-    <div class="course_bg_box ">
-      <div class="bg_img_box">
-        <img src="images/course-bg.jpg" alt="">
-      </div>
-    </div>
-    <div class="container-fluid pr-0">
-      <div class="heading_container">
-        <h2>
-          Popular courses
-        </h2>
-        <p>
-          It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem
-        </p>
-      </div>
-      <div class="course_container">
-        <div class=" course_owl-carousel owl-carousel owl-theme ">
-          <div class="item">
-            <div class="box">
-              <div class="img-box">
-                <img src="images/c1.jpg" alt="">
-              </div>
-              <div class="detail-box">
-                <h4>
-                  Learn JavaScript
-                </h4>
-                <p>
-                  Incidunt veritatis adipisci autem repellat possimus id eos praesentium, beatae repudiandae.
-                </p>
-                <a href="">
-                  View Detail
-                </a>
-              </div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="box">
-              <div class="img-box">
-                <img src="images/c2.jpg" alt="">
-              </div>
-              <div class="detail-box">
-                <h4>
-                  Learn Python
-                </h4>
-                <p>
-                  Incidunt veritatis adipisci autem repellat possimus id eos praesentium, beatae repudiandae.
-                </p>
-                <a href="">
-                  View Detail
-                </a>
-              </div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="box">
-              <div class="img-box">
-                <img src="images/c3.jpg" alt="">
-              </div>
-              <div class="detail-box">
-                <h4>
-                  Learn Html
-                </h4>
-                <p>
-                  Incidunt veritatis adipisci autem repellat possimus id eos praesentium, beatae repudiandae.
-                </p>
-                <a href="">
-                  View Detail
-                </a>
-              </div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="box">
-              <div class="img-box">
-                <img src="images/c4.jpg" alt="">
-              </div>
-              <div class="detail-box">
-                <h4>
-                  Learn Java
-                </h4>
-                <p>
-                  Incidunt veritatis adipisci autem repellat possimus id eos praesentium, beatae repudiandae.
-                </p>
-                <a href="">
-                  View Detail
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- course section ends -->
-
-  <!-- info section -->
-  <section class="info_section ">
-
-    <div class="container">
-      <div class="info_top ">
-        <div class="row ">
-          <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="info_detail">
-              <a href="index.html">
-                <h4>
-                  Natone
-                </h4>
-              </a>
-              <p>
-                Soluta odit exercitationem rerum aperiam eos consectetur impedit delectus qui reiciendis, distinctio, asperiores fuga labore a? Magni natus.
-              </p>
-              <div class="social_box">
-                <a href="">
-                  <i class="fa fa-facebook" aria-hidden="true"></i>
-                </a>
-                <a href="">
-                  <i class="fa fa-twitter" aria-hidden="true"></i>
-                </a>
-                <a href="">
-                  <i class="fa fa-linkedin" aria-hidden="true"></i>
-                </a>
-                <a href="">
-                  <i class="fa fa-instagram" aria-hidden="true"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 col-md-4 col-lg-3 mx-auto">
-            <h4>
-              Contact us
-            </h4>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit
-            </p>
-            <div class="contact_nav">
-              <a href="">
-                <i class="fa fa-map-marker" aria-hidden="true"></i>
-                <span>
-                  Location
-                </span>
-              </a>
-              <a href="">
-                <i class="fa fa-phone" aria-hidden="true"></i>
-                <span>
-                  Call : +01 123455678990
-                </span>
-              </a>
-              <a href="">
-                <i class="fa fa-envelope" aria-hidden="true"></i>
-                <span>
-                  Email : demo@gmail.com
-                </span>
-              </a>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="info_form">
-              <h4>
-                SIGN UP TO OUR NEWSLETTER
-              </h4>
-              <form action="">
-                <input type="text" placeholder="Enter Your Email" />
-                <button type="submit">
-                  Subscribe
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- end info_section -->
-
-
-  <!-- footer section -->
-  <footer class="footer_section">
-    <div class="container">
-      <p>
-        &copy; <span id="displayYear"></span> All Rights Reserved By
-        <a href="https://html.design/">Free Html Templates</a>
-      </p>
-    </div>
-  </footer>
-  <!-- footer section -->
-
+<div class="jbrowse_linear_view">4444</div>
 </div>
+
+
+
+  <!-- footer section -->
+  <el-footer>
+      <div>
+        <p>All Right@LuoYang</p>
+      </div>
+    </el-footer>
+  <!-- footer section -->
+
+</el-container>
 </template>
 
 
@@ -257,3 +78,52 @@ import "@/assets/css/font-awesome.min.css";
     }
   } 
 </script>
+
+<style>
+.el-header,
+.el-footer {
+  background-color: white;
+  color: #333;
+  text-align: center;
+}
+
+body > .el-container {
+  margin-bottom: 40px;
+}
+
+.el-container:nth-child(5) .el-aside,
+.el-container:nth-child(6) .el-aside {
+  line-height: 260px;
+}
+
+.el-container:nth-child(7) .el-aside {
+  line-height: 320px;
+}
+
+.mainbody {
+  background-color: #eae9e5;
+}
+
+.mod_pop {
+  margin-top: 100px;
+  margin-bottom: 100px;
+  background-color: white;
+}
+
+.mod_race{
+  margin-top: 100px;
+  margin-bottom: 100px;
+  background-color: white;
+}
+
+.showEcharts {
+  width: 700px;
+  height: 700px;
+  position: relative;
+  margin: auto;
+}
+
+.jbrowse_linear_view{
+  min-height: 700px;
+}
+</style>

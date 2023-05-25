@@ -12,13 +12,15 @@ import '@/assets/css/style.css'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css';
 import * as echarts from 'echarts';
-
+import axios from 'axios'
+// import httpRequest from '@/utils/httpRequest'
 
 Vue.config.productionTip = false
 
 Vue.use(ElementUI, { size: 'small', zIndex: 3000 });
 
 Vue.prototype.$echarts = echarts
+// Vue.prototype.$http=httpRequest
 
 /* eslint-disable no-new */
 new Vue({
